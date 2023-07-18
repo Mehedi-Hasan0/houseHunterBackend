@@ -66,6 +66,59 @@ exports.registerNewUser = async (req, res, next) => {
 };
 
 
+exports.logIn = async (req, res) => {
+    const payload = req.body;
+    const email = payload.email;
+    const password = payload.password;
+
+    const findCriteria = {
+        emailId: email
+    }
+    const userDetails = await User.find(findCriteria).limit(1).exec();
+
+    try {
+        let isMatched = await bcrypt.compare(password, userDetails[0].password)
+        if (isMatched) {
+            const accessToken = jwt.sign(
+                {
+                    _id: userDetails[0]._id,
+                    role: userDetails[0].role
+                },
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn: "30m" }
+            )
+            const refreshToken = jwt.sign({ _id: userDetails[0]._id, role: userDetails[0].role }, process.env.REFRESH_TOKEN_SECRET)
+
+            const updatedUser = await User.findOneAndUpdate(findCriteria, { accessToken: accessToken, refreshToken: refreshToken }, { new: true })
+            let response = {
+                info: "Successfully logged in",
+                success: 1,
+                status: 200,
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+                user_details: updatedUser
+            }
+            res.send(response);
+        } else if (!isMatched) {
+            let response = {
+                info: "Incorrect Password",
+                success: 0
+            }
+            res.send(response)
+        } else {
+            res.send("Not allowed!")
+        }
+    } catch (error) {
+        let response = {
+            info: "No user found",
+            status: 500,
+        }
+        res.send(response)
+    }
+}
+
+
+
 exports.refreshToken = async (req, res) => {
     const refreshToken = req.body.refreshToken;
 

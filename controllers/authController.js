@@ -2,6 +2,7 @@ require("dotenv").config();
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 const saltRounds = 1
 
 exports.registerNewUser = async (req, res, next) => {
@@ -176,5 +177,26 @@ exports.logOut = async (req, res) => {
         res.send("User logout")
     } catch (error) {
         console.log(error, "Logout error")
+    }
+}
+
+exports.getUserDetails = async (req, res) => {
+    try {
+        const userId = req.user
+        const findCriteria = {
+            _id: new mongoose.Types.ObjectId(userId)
+        }
+
+        const userDetails = await User.findById(findCriteria);
+
+        let response = {
+            info: "user exists",
+            status: 200,
+            success: 1,
+            user_details: userDetails
+        }
+        res.send(response)
+    } catch (error) {
+        console.log(error, "LINE 202")
     }
 }

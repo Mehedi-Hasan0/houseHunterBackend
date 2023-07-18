@@ -2,6 +2,9 @@ require("dotenv").config()
 const express = require("express");
 const mongoose = require("mongoose")
 const cors = require("cors");
+const port = 5000;
+
+const auth = require("./routes/auth")
 
 const app = express();
 
@@ -10,7 +13,9 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
-const port = 5000;
+// Use routes
+app.use("/auth", auth);
+
 
 async function main() {
     await mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.in81gjk.mongodb.net/house-hunter-db`)

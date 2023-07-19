@@ -326,18 +326,34 @@ exports.deleteBookedHouse = async (req, res) => {
 
 exports.getAllHousesList = async (req, res) => {
     try {
-        const allHousesList = await Houses.find({});
-        console.log(allHousesList)
-        let response = {
+        const perPage = req.query.per_page
+        const page = req.query.page
+
+        console.log(perPage, page, "Line 332")
+
+        const startIndex = (page - 1) * perPage;
+        const endIndex = page * perPage;
+
+        const totalHouses = await Houses.countDocuments({});
+
+        const bookingList = await Houses.find({})
+            .skip(startIndex)
+            .limit(endIndex)
+            .exec();
+
+        const response = {
             success: 1,
             status: 200,
-            data: allHousesList
-        }
-        res.status(200).send(response)
+            data: bookingList,
+            totalHouses,
+        };
+
+        res.status(200).send(response);
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.status(500).send({ error: "Internal Server Error" });
     }
-}
+};
 
 exports.bookHouse = async (req, res) => {
     const payload = req.body;

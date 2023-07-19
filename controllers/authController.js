@@ -300,3 +300,22 @@ exports.deleteHouse = async (req, res) => {
     }
 
 }
+
+exports.getAllHousesList = async (req, res) => {
+    try {
+        const allHousesList = await Houses.find({});
+        console.log(allHousesList)
+        let response = {
+            success: 1,
+            status: 200,
+            data: allHousesList
+        }
+        res.status(200).send(response)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+exports.bookHouse = async (req, res) => {
+    const payload = req.body;
+}

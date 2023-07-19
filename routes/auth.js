@@ -25,3 +25,5 @@ router.delete("/delete_houses/:id", verifyJwtToken, deleteHouse);
 router.delete("/delete_booked_houses/:id", verifyJwtToken, deleteBookedHouse);
 
 module.exports = router;
+
+// checking data

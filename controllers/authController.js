@@ -278,3 +278,25 @@ exports.editHouseDetails = async (req, res) => {
         console.log(error)
     }
 }
+
+exports.deleteHouse = async (req, res) => {
+    try {
+        const houseID = req.params.id;
+
+        const deletedHouse = await Houses.findByIdAndDelete(houseID);
+
+        if (!deletedHouse) {
+            return res.status(404).json({ error: "House not found" });
+        }
+        let response = {
+            success: 1,
+            status: 200,
+            message: "Sucessfully deleted"
+        }
+        res.send(response);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+
+}

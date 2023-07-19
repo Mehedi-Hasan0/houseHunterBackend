@@ -14,7 +14,7 @@ const houseScema = new mongoose.Schema({
         type: String
     },
     bathrooms: {
-        trype: String
+        type: String
     },
     roomSize: {
         type: String

@@ -1,5 +1,5 @@
 const express = require("express");
-const { registerNewUser, refreshToken, logOut, logIn, getUserDetails, postHouseDetails, getHouseList, editHouseDetails } = require("../controllers/authController");
+const { registerNewUser, refreshToken, logOut, logIn, getUserDetails, postHouseDetails, getHouseList, editHouseDetails, deleteHouse } = require("../controllers/authController");
 const { verifyJwtToken } = require("../middleware/jwt");
 const router = express.Router();
 
@@ -15,5 +15,7 @@ router.post("/house_details", verifyJwtToken, postHouseDetails)
 router.post("/refresh_token", refreshToken)
 
 router.patch("/edit_house_details", verifyJwtToken, editHouseDetails)
+
+router.delete("/delete_houses/:id", verifyJwtToken, deleteHouse);
 
 module.exports = router;

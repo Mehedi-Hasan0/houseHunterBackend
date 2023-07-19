@@ -37,6 +37,20 @@ const bookingScema = new mongoose.Schema({
     },
     userId: {
         type: String
+    },
+    houseId: {
+        type: String
+    },
+    userInfo: {
+        name: {
+            type: String
+        },
+        emailId: {
+            type: String,
+        },
+        phoneNumber: {
+            type: String
+        }
     }
 }, { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } });
 

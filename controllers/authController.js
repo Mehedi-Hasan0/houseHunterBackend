@@ -318,7 +318,12 @@ exports.getAllHousesList = async (req, res) => {
 }
 
 exports.bookHouse = async (req, res) => {
-    const houseID = req.body.houseId;
+    const payload = req.body;
+    const userEmail = payload.BookingUserData.email;
+    const userName = payload.BookingUserData.name;
+    const userPhoneNumber = payload.BookingUserData.phoneNumber;
+    const houseID = payload.housesID;
+    console.log(payload, "line 322")
     const findCriteria = {
         _id: new mongoose.Types.ObjectId(houseID)
     }
@@ -337,7 +342,13 @@ exports.bookHouse = async (req, res) => {
         rentPerMonth: findHouse.rentPerMonth,
         phoneNumber: findHouse.phoneNumber,
         discription: findHouse.discription,
-        userId: findHouse.userId
+        userId: findHouse.userId,
+        houseId: findHouse._id,
+        userInfo: {
+            name: userName,
+            emailId: userEmail,
+            phoneNumber: userPhoneNumber
+        }
     }
 
     const saveHouseToBooking = await Booking(bookingData).save()
@@ -349,4 +360,18 @@ exports.bookHouse = async (req, res) => {
     }
 
     res.status(200).send(response)
+}
+
+exports.getBookedList = async (req, res) => {
+    try {
+        const allBookedList = await Booking.find({});
+        let response = {
+            success: 1,
+            status: 200,
+            data: allBookedList
+        }
+        res.status(200).send(response)
+    } catch (error) {
+        console.log(error)
+    }
 }

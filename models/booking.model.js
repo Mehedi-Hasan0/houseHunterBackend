@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bookingScema = new mongoose.Schema({
     name: {
         type: String,
+        unique: true
     },
     address: {
         type: String,

@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const Houses = require("../models/house.model");
+const Booking = require("../models/booking.model");
 const saltRounds = 1
 
 exports.registerNewUser = async (req, res, next) => {
@@ -317,5 +318,35 @@ exports.getAllHousesList = async (req, res) => {
 }
 
 exports.bookHouse = async (req, res) => {
-    const payload = req.body;
+    const houseID = req.body.houseId;
+    const findCriteria = {
+        _id: new mongoose.Types.ObjectId(houseID)
+    }
+
+    const findHouse = await Houses.findById(findCriteria)
+
+    let bookingData = {
+        name: findHouse.name,
+        address: findHouse.address,
+        city: findHouse.city,
+        bedrooms: findHouse.bedrooms,
+        bathrooms: findHouse.bathrooms,
+        roomSize: findHouse.roomSize,
+        houseImage: findHouse.houseImage,
+        availablityData: findHouse.availablityDate,
+        rentPerMonth: findHouse.rentPerMonth,
+        phoneNumber: findHouse.phoneNumber,
+        discription: findHouse.discription,
+        userId: findHouse.userId
+    }
+
+    const saveHouseToBooking = await Booking(bookingData).save()
+
+    let response = {
+        success: 1,
+        status: 200,
+        message: "successfully booked"
+    }
+
+    res.status(200).send(response)
 }

@@ -1,5 +1,5 @@
 const express = require("express");
-const { registerNewUser, refreshToken, logOut, logIn, getUserDetails, postHouseDetails, getHouseList } = require("../controllers/authController");
+const { registerNewUser, refreshToken, logOut, logIn, getUserDetails, postHouseDetails, getHouseList, editHouseDetails } = require("../controllers/authController");
 const { verifyJwtToken } = require("../middleware/jwt");
 const router = express.Router();
 
@@ -13,5 +13,7 @@ router.post("/get_user_details", verifyJwtToken, getUserDetails)
 router.post("/logout", verifyJwtToken, logOut)
 router.post("/house_details", verifyJwtToken, postHouseDetails)
 router.post("/refresh_token", refreshToken)
+
+router.patch("/edit_house_details", verifyJwtToken, editHouseDetails)
 
 module.exports = router;

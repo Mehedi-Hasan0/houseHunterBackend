@@ -41,7 +41,7 @@ exports.registerNewUser = async (req, res, next) => {
                 role: userDetails[0].role
             },
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: "30m" }
+            { expiresIn: "60m" }
         )
         const refreshToken = jwt.sign({ _id: userDetails[0]._id, role: userDetails[0].role }, process.env.REFRESH_TOKEN_SECRET)
 
@@ -87,7 +87,7 @@ exports.logIn = async (req, res) => {
                     role: userDetails[0].role
                 },
                 process.env.ACCESS_TOKEN_SECRET,
-                { expiresIn: "30m" }
+                { expiresIn: "60m" }
             )
             const refreshToken = jwt.sign({ _id: userDetails[0]._id, role: userDetails[0].role }, process.env.REFRESH_TOKEN_SECRET)
 
@@ -150,7 +150,7 @@ exports.refreshToken = async (req, res) => {
                         role: userDetails.role
                     },
                     process.env.ACCESS_TOKEN_SECRET,
-                    { expiresIn: "30m" }
+                    { expiresIn: "60m" }
                 );
                 console.log(accessToken, "AccessToken")
 
@@ -235,6 +235,45 @@ exports.getHouseList = async (req, res) => {
         const houseList = await Houses.find(findCriteria)
         res.status(200).json(houseList)
 
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+exports.editHouseDetails = async (req, res) => {
+    try {
+        const payload = req.body;
+        const houseID = payload.housId
+        const findCriteria = {
+            _id: new mongoose.Types.ObjectId(houseID)
+        }
+
+        const updateData = {
+            name: payload.name,
+            address: payload.address,
+            city: payload.city,
+            bedrooms: payload.bedrooms,
+            bathrooms: payload.bathrooms,
+            roomSize: payload.roomSize,
+            houseImage: payload.houseImage,
+            availablityData: payload.availablityDate,
+            rentPerMonth: payload.rentPerMonth,
+            phoneNumber: payload.phoneNumber,
+            discription: payload.discription
+        }
+
+        const updatedHouse = await Houses.findByIdAndUpdate(
+            findCriteria,
+            updateData,
+            { new: true }
+        );
+
+        let response = {
+            success: 1,
+            status: 200,
+            message: "Sucessfully updated"
+        }
+        res.status(200).send(response)
     } catch (error) {
         console.log(error)
     }

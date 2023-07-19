@@ -302,6 +302,28 @@ exports.deleteHouse = async (req, res) => {
 
 }
 
+exports.deleteBookedHouse = async (req, res) => {
+    try {
+        const houseID = req.params.id;
+
+        const deletedHouse = await Booking.findByIdAndDelete(houseID);
+
+        if (!deletedHouse) {
+            return res.status(404).json({ error: "House not found" });
+        }
+        let response = {
+            success: 1,
+            status: 200,
+            message: "Sucessfully deleted"
+        }
+        res.send(response);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+
+}
+
 exports.getAllHousesList = async (req, res) => {
     try {
         const allHousesList = await Houses.find({});
@@ -322,6 +344,7 @@ exports.bookHouse = async (req, res) => {
     const userEmail = payload.BookingUserData.email;
     const userName = payload.BookingUserData.name;
     const userPhoneNumber = payload.BookingUserData.phoneNumber;
+    const userId = payload.BookingUserData.userId;
     const houseID = payload.housesID;
     console.log(payload, "line 322")
     const findCriteria = {
@@ -338,11 +361,11 @@ exports.bookHouse = async (req, res) => {
         bathrooms: findHouse.bathrooms,
         roomSize: findHouse.roomSize,
         houseImage: findHouse.houseImage,
-        availablityData: findHouse.availablityDate,
+        availablityDate: findHouse.availablityDate,
         rentPerMonth: findHouse.rentPerMonth,
         phoneNumber: findHouse.phoneNumber,
         discription: findHouse.discription,
-        userId: findHouse.userId,
+        userId: userId,
         houseId: findHouse._id,
         userInfo: {
             name: userName,
@@ -371,6 +394,47 @@ exports.getBookedList = async (req, res) => {
             data: allBookedList
         }
         res.status(200).send(response)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+exports.getHouseOwnerBookingList = async (req, res) => {
+    try {
+        const role = req.role;
+        const user = req.user;
+
+        if (role !== "House Owner") {
+            throw new Error("Not authorized for see bookings houses");
+        }
+
+        const findCriteria = {
+            userId: user
+        }
+        const bookedHouses = await Booking.find(findCriteria);
+
+        res.status(200).send(bookedHouses)
+        console.log(bookedHouses, "line 391")
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+exports.getHouseRenterBookingList = async (req, res) => {
+    try {
+        const role = req.role;
+        const userId = req.user;
+
+        if (role !== "House Renter") {
+            throw new Error("Not authorized for see bookings houses");
+        }
+
+        const findCriteria = {
+            userId: userId
+        }
+
+        const bookedHouseList = await Booking.find(findCriteria)
+        res.status(200).send(bookedHouseList)
     } catch (error) {
         console.log(error)
     }

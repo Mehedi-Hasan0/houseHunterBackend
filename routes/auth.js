@@ -1,11 +1,13 @@
 const express = require("express");
-const { registerNewUser, refreshToken, logOut, logIn, getUserDetails, postHouseDetails, getHouseList, editHouseDetails, deleteHouse, getAllHousesList, bookHouse, getBookedList } = require("../controllers/authController");
+const { registerNewUser, refreshToken, logOut, logIn, getUserDetails, postHouseDetails, getHouseList, editHouseDetails, deleteHouse, getAllHousesList, bookHouse, getBookedList, getHouseOwnerBookingList, getHouseRenterBookingList, deleteBookedHouse } = require("../controllers/authController");
 const { verifyJwtToken } = require("../middleware/jwt");
 const router = express.Router();
 
 router.use(express.json())
 
 router.get("/house_list", verifyJwtToken, getHouseList)
+router.get("/booked_houses", verifyJwtToken, getHouseOwnerBookingList)
+router.get("/renter_booked_houses", verifyJwtToken, getHouseRenterBookingList)
 router.get("/all_houses_list", getAllHousesList)
 router.get("/booking_list", getBookedList)
 
@@ -20,5 +22,6 @@ router.post("/refresh_token", refreshToken)
 router.patch("/edit_house_details", verifyJwtToken, editHouseDetails)
 
 router.delete("/delete_houses/:id", verifyJwtToken, deleteHouse);
+router.delete("/delete_booked_houses/:id", verifyJwtToken, deleteBookedHouse);
 
 module.exports = router;

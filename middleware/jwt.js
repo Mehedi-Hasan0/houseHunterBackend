@@ -11,7 +11,6 @@ exports.verifyJwtToken = async (req, res, next) => {
     }
     try {
         let decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        console.log(decoded);
         req.user = decoded._id;
         req.role = decoded.role
         next();

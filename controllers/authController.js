@@ -224,3 +224,18 @@ exports.postHouseDetails = async (req, res) => {
     }
 
 }
+
+exports.getHouseList = async (req, res) => {
+    try {
+        const userId = req.user;
+        const findCriteria = {
+            userId: userId
+        }
+
+        const houseList = await Houses.find(findCriteria)
+        res.status(200).json(houseList)
+
+    } catch (error) {
+        console.log(error)
+    }
+}

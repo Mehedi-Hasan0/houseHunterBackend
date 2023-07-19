@@ -33,6 +33,9 @@ const houseScema = new mongoose.Schema({
     },
     discription: {
         type: String
+    },
+    userId: {
+        type: String
     }
 }, { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } });
 

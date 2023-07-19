@@ -5,7 +5,7 @@ const houseScema = new mongoose.Schema({
         type: String,
     },
     address: {
-        type: String
+        type: String,
     },
     city: {
         type: String

@@ -3,6 +3,7 @@ const User = require("../models/user.model");
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const Houses = require("../models/house.model");
 const saltRounds = 1
 
 exports.registerNewUser = async (req, res, next) => {
@@ -199,4 +200,27 @@ exports.getUserDetails = async (req, res) => {
     } catch (error) {
         console.log(error, "LINE 202")
     }
+}
+
+exports.postHouseDetails = async (req, res) => {
+    try {
+        const role = req.role;
+        const payload = req.body;
+        console.log(role, "206")
+        console.log(payload)
+        if (role !== "House Owner") {
+            throw new Error("Not authorized for posting houses");
+        }
+        const saveHouse = await Houses(payload).save();
+
+        let response = {
+            status: 200,
+            success: 1,
+            message: "Successfully uploaded"
+        }
+        res.status(200).send(response)
+    } catch (error) {
+        console.log(error)
+    }
+
 }
